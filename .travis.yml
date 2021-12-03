@@ -1,30 +1,50 @@
 language : bash
+env:
+    global:
+      - HUB_PROTOCOL=https
+      #GITHUB_TOKEN
+      - secure:  "vqLrAHFlD/eLdn/NlyqMhIrLWl+7fR097Ch/O4etLgFk20+zc0fTyffHoXGbOZQlKwxpS58b2bk7j6S8RJVOv+WSL+lswqk7EBdA+qGmGyad0/K0U9Nz+pK5MfnDFbtXu8ReiH9ompms5rQsGAZ3kMqxlI/5uxh2V290SnjWSxAh4KRqwpZfXycS2oIzWhnZqssGWq/9ZU6TqIsbz+AujmE72iOd75cttg15B56BzgMaPBKdGUOktOEfajVEVDW3bBdFfP1H4Gpg/aO5qaU50g69Qi6FXj72DjyLN/ezfe0QPMbY4XzxkxVQDeoyHG57PpDJBzz7U40qb1nax9NHy5uX/iA3XOQiK8Yl213soUiNrp9RhWDtuWhK/5wbRyOs55D5aUlB5S6MkyEePD/xCuCjdQDn8i53enp68zs8xTGW9AeYf9n2jPPvV06TSue0VQ/+JIN9h8ZhxHt8jhVbGTJFv1p97Q9T3WsgM0Rw86b3sV1uozFqbaLA6szEbZuWhO9tZXGWXSVdf8bmrzUUU5CIQe2y73XQ4Wec0yx4jkgr7hbZUgS16ihgYDF6SBDOLcci1betk9xtRQesyCwwTPRKnYeQptyTp62WMlES/YO02h0CMpsOF75t6UlJycSFjB5WpGqYWMwkgGUIkcVKkx5A4lgkwd1iVKJae+swtYE="
+branches:
+  except:
+  - nightly
+git:
+  quiet: true
 before_install:
+    - curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+    - echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
     - sudo apt-get -qq update
-    - sudo apt-get install -y ruby ruby-dev rubygems-integration build-essential po-debconf
-    - gem install --no-ri --no-rdoc fpm
+    - sudo apt-get install -y debhelper devscripts fakeroot build-essential po-debconf gh
+    - openssl aes-256-cbc -K $encrypted_2155243bff9e_key -iv $encrypted_2155243bff9e_iv -in 077CC9F2.gpg.enc -out 077CC9F2.gpg -d
+    - gpg --import 077CC9F2.gpg
 install:
-    - make
+    - debuild '-k9D1DC8DD077CC9F2'
 deploy:
-    - provider: bintray
+    - provider: releases
       skip_cleanup: true
-      file: .bintray.json
-      user: camlafit
-      key:
-          secure: GLk/hTt0zBuukw3k9399UY1Q3zFa0SsYTImc/eyDE6hgZZRgOx7gIGSt/OE5DKqWydaaVWrgA+7iji2tBkSAJ+AU+tf3ZaGaNUhUXjWQealBLn57m3ieTxzztPEYWL/VHU5UYEMs4RD82IPo5RdIgoKLV8cY+U+jsE06ecjjg7xVicaRB09Advpb2sy2iQ+x1PO9OOCkvejztkjFZfAvXvjphhsCsz4yYq1ipgJrBPjkln2HWK499/Ei7/BfuHPHu1J9tn3y5ng8dUjEoRVDCiHeXTLm1xpU7fYLRd3YTjLr+HJ+ioayGdlgCC7btbiDInsnaJ+WazE7MpenOAh9bmTt3A3Znd4ZJvpD8tYTFbwTTdnXpAtsD8T6n7LVCeBySvQoI6DljV53Lpn/M+Ip/onlhn4vY81e+gYNEV9fdpXoHfaIdRnn1Kau3P+OaubSXkoTXqlHxGh+lFvT310/QUzIkxoUEa7VFwGyxoscjUUTZhAzkg6OMsEsgT7GsXyih+w1lYy/al7Gosmf9s6mZaTH9Vbwqnf7OQY/LNSX7JAazYx/vip0ltzabWrUHdzP5Cl1uQNbVQ+3OuyKe8RFhFUF09vh9e3e3gDudVqyaeYziXmXsg1xh4LHQbzAbLhD2C2YqojOWBJJnGlF4tTX+u28oF+WpL9gEMttyfU5l60=
-    - provider: bintray
-      skip_cleanup: true
-      file: .bintray.release.json
-      user: camlafit
-      key:
-          secure: GLk/hTt0zBuukw3k9399UY1Q3zFa0SsYTImc/eyDE6hgZZRgOx7gIGSt/OE5DKqWydaaVWrgA+7iji2tBkSAJ+AU+tf3ZaGaNUhUXjWQealBLn57m3ieTxzztPEYWL/VHU5UYEMs4RD82IPo5RdIgoKLV8cY+U+jsE06ecjjg7xVicaRB09Advpb2sy2iQ+x1PO9OOCkvejztkjFZfAvXvjphhsCsz4yYq1ipgJrBPjkln2HWK499/Ei7/BfuHPHu1J9tn3y5ng8dUjEoRVDCiHeXTLm1xpU7fYLRd3YTjLr+HJ+ioayGdlgCC7btbiDInsnaJ+WazE7MpenOAh9bmTt3A3Znd4ZJvpD8tYTFbwTTdnXpAtsD8T6n7LVCeBySvQoI6DljV53Lpn/M+Ip/onlhn4vY81e+gYNEV9fdpXoHfaIdRnn1Kau3P+OaubSXkoTXqlHxGh+lFvT310/QUzIkxoUEa7VFwGyxoscjUUTZhAzkg6OMsEsgT7GsXyih+w1lYy/al7Gosmf9s6mZaTH9Vbwqnf7OQY/LNSX7JAazYx/vip0ltzabWrUHdzP5Cl1uQNbVQ+3OuyKe8RFhFUF09vh9e3e3gDudVqyaeYziXmXsg1xh4LHQbzAbLhD2C2YqojOWBJJnGlF4tTX+u28oF+WpL9gEMttyfU5l60=
+      file_glob: true
+      file: "../*.deb"
+      api_key:
+          secure: "hB3t5h8JRF3Bem1/2VtSUo5rRQUVkOBLgyf7pVXH2LVQLO89ZhQMQBW0x+hijCzW+I8HnGqEYlkokpH2f0JSqT2fIRRoRKD9EDNC4eamYu9ATgPpcRMF5o3U+5FMKZhH/UC6+7lo2BSd+HP45knVVYfUHJvLxR4TpxnjomIJkldjkndZjQ/SjIjBxaHtwZ7Lw/oppHpKbEEAnuPewivsXfZC7a26kyjtOMFCGzRV+JAO1fCs/hF8npBG3noz2W7vJ1NF5y4MwRlX0+g1czVFTxOQYfefv2BXZA2AaUJf0wdd0DEQ/rmWD8TEQSHsx3iNnNG3QdNrFuD5duqLOu90OeFuruObar7/HpQvx9UBv44uujr/ENbraMvn7yYvcYg+nIuM8njNMJWE6/9vdZQ2Xk/I3zt/H4LntQ3BXkccV/1QR+AasN0aDAs5x6fxX8tEUZShCOX9cVSOYWfAlEG053U5sZZ3o1ufsxfEzJU8osuJcxGQZjP9NPMVaruuw0xYW0fuHra6Zf1+SC14//Ohu5STr2tJauY3U5Vx/7y/Qkp9vBt0Ec4jzLXAZ3mTWAPBqBEyMnrzn5rt4G1ixkgkhELfb8wnK4rK6fGmpOFvNUdLL/Y0hszve3oT+r48AioOxRHqq2EOvqeFAPRzrSJ+1Btm/x4WbNL8Cq6MLwtaOD8="
       on:
           tags: true
     - provider: releases
       skip_cleanup: true
       file_glob: true
-      file: "./*.deb"
+      file: "../*.deb"
+      tag_name: "nightly"
+      prerelease: true
+      name: Automatic nightly build by Travis on $(date +'%F %T %Z').
+      target_commitish: $TRAVIS_COMMIT
       api_key:
-          secure: "kIDGS4LaqEvLgcA2VwUu/dViTPi4k4DWbpKt2+oLNFROFYLScF2v0hh+W1TZRJcgZUQSbQcZfkj6Wcqq1zbSewnlRG2r1JhAs4fq/StBfb14p1kw/BRv8OTYl7I38PEaMqZ0P3UvjSby0n1hIXgpTD6Hq2n8IQXqo9x3FY8WWOjTFXppar21cQG/jdXsOSiNn0xRMlJ6GvR8Qeq9G66c/YYFrrnpDN0IV4LpyrgurV4nMEybFWw5Z/43xBrDdq3RoR+mI+2d4u/+ac2XDTNAIaji5RcdrWkOzgfkWvg8uZbCfjoMdTKSnFVu2oywONgdpETP5eRopHELBqUgx875I3KQ9PKR8c5canA9Tv548HoTY43x+fRa5Zm19k0SQ9h6kL+Es1wxAgrE0NpNoYv4o509DOqRDysUQ8OoRlwwRo8zMj/hpCH1OjEB+UQV6H7u+nmkzU9UNQfPPgjAAw2Lu7kUCwHwyylfxroE2aOtfEP4EnnKkYCQveHzqzTLHjopOZRKNc9glOCnbZh7wVBfiONQCJxiP7i2gSYmVoIB61xaJDXnNwE74a14Wg2DiQt5kqB9RKGa/uGJn1RSzxgxr5ddtbvahe3rp4J0cfvQlESKrcxv21BbfquDqOwCPO6mKDlOCmmR0u4+8EXilZXqPSE8gSFM/xYhv6XbVUKGqBk="
+          secure: "hB3t5h8JRF3Bem1/2VtSUo5rRQUVkOBLgyf7pVXH2LVQLO89ZhQMQBW0x+hijCzW+I8HnGqEYlkokpH2f0JSqT2fIRRoRKD9EDNC4eamYu9ATgPpcRMF5o3U+5FMKZhH/UC6+7lo2BSd+HP45knVVYfUHJvLxR4TpxnjomIJkldjkndZjQ/SjIjBxaHtwZ7Lw/oppHpKbEEAnuPewivsXfZC7a26kyjtOMFCGzRV+JAO1fCs/hF8npBG3noz2W7vJ1NF5y4MwRlX0+g1czVFTxOQYfefv2BXZA2AaUJf0wdd0DEQ/rmWD8TEQSHsx3iNnNG3QdNrFuD5duqLOu90OeFuruObar7/HpQvx9UBv44uujr/ENbraMvn7yYvcYg+nIuM8njNMJWE6/9vdZQ2Xk/I3zt/H4LntQ3BXkccV/1QR+AasN0aDAs5x6fxX8tEUZShCOX9cVSOYWfAlEG053U5sZZ3o1ufsxfEzJU8osuJcxGQZjP9NPMVaruuw0xYW0fuHra6Zf1+SC14//Ohu5STr2tJauY3U5Vx/7y/Qkp9vBt0Ec4jzLXAZ3mTWAPBqBEyMnrzn5rt4G1ixkgkhELfb8wnK4rK6fGmpOFvNUdLL/Y0hszve3oT+r48AioOxRHqq2EOvqeFAPRzrSJ+1Btm/x4WbNL8Cq6MLwtaOD8="
       on:
-          tags: true
+          branch: master
+before_deploy:
+    - >
+      if [[ $TRAVIS_BRANCH == "master" ]]; then
+        gh release delete nightly -R ${TRAVIS_REPO_SLUG} -y
+        git tag -f nightly || true &&
+        git remote add gh https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git &&
+        git push --delete -f gh nightly || true &&
+        git push -f gh nightly || true
+      fi

@@ -1,0 +1,6 @@
+alternc-cli (0.0.1) stable; urgency=low
+
+  * initial AlternC cli service
+
+  -- Camille Lafitte <alternc@webelys.com>  Fri, 3 Dec 2021 10:16:00 +0200
+
