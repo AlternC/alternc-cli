@@ -6,7 +6,7 @@ This alternc plugin provide an api cli to manage some alternc action
 
 # Prototype
 
-The cli should to follow this format : ```AlternC <alternc_option> <object> <action> <object|action_option>```
+The cli should to follow this format : ```AlternC <alternc_option> <ressource> <action> <ressource|action_option>```
 
 Cli is executed with current POSIX user
 AlternC option are :
@@ -14,13 +14,13 @@ AlternC option are :
 
 This cli is not directly an AlternC wrapper, purpose, in first time, is to rationalize console logic. And wrap these commmands with introspection or hardcoded code
 
-* Objects could be set in /usr/lib/alternc/panel/class/m_*.php or other transversal structure
-  * as AlternC object we can think to account, ftp, mail, ...
-  * as Transversal object we can think to permission, opendkim, ...
+* Ressources could be set in /usr/lib/alternc/panel/class/m_*.php or other transversal structure :
+  * as an AlternC object we can think to account, ftp, mail, ...,
+  * as Transversal elements as services (bind, apache, opendkim, ...) or generic (admin, ...)
 * Action could be split in two part, common and specific action
-  * as common action we have add, update, delete, list
-  * as specific action we have print, search, fix
-* Options are free and should be related to action and/or object
+  * as common actions we have add, update, delete, list, rebuild,
+  * as specific actions we have print, search, fix
+* Options are free and should be related to action and/or ressource
 
 
 Actually cli could be defined with develop as this :
@@ -57,7 +57,7 @@ alternc
         add
         update
         list
-    sylmpa
+    sympa
         add
         update
         list
@@ -65,6 +65,8 @@ alternc
         add
         update
         list
+    dns
+        rebuild
 ```
 
 
