@@ -1,0 +1,26 @@
+#!/bin/php8.2
+<?php
+
+if (\PHP_VERSION_ID < 80200) {
+    echo "Phint requires PHP8.2 or newer\n";
+    exit(1);
+}
+
+require_once '/usr/share/php/AlternC/cli/vendor/autoload.php';
+require_once '/usr/share/alternc/panel/class/config_nochk.php';
+
+$app = new Ahc\Cli\Application(
+    'alternc',
+    'v0.0.0'
+);
+
+$logo = "
+ ___  _  _                     ___
+/   \| || |_  ___  _ _  _ _   / __|
+| - || ||  _|/ -_)| '_|| ' \ | (__
+|_|_||_| \__|\___||_|  |_||_| \___|
+
+AlternC cli : one to manage all
+";
+
+$app->logo($logo)->handle($_SERVER['argv']);
