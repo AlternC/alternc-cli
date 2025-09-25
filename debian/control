@@ -11,7 +11,8 @@ Package: alternc-cli
 Architecture: all
 Depends: apt-utils,
        , php8.2-cli
-       , alternc (>= 3.5.0),
+       , alternc (>= 3.5.0)
+       , composer
 Description: A cli to manage some AlternC elements
  AlternC is a mutualized hosting software manager for Linux.
  It allows you to manage your websites, domains, ftp, emails, aliases,
