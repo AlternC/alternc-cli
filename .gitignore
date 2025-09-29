@@ -6,3 +6,8 @@ debian/.debhelper
 debian/debhelper-build-stamp
 **/vendor
 *.gpg
+.php-cs-fixer.cache
+
+# IDE
+.vscode/
+stubs/
