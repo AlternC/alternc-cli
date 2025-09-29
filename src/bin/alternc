@@ -9,7 +9,7 @@ if (\PHP_VERSION_ID < 80200) {
 require_once '/usr/share/php/AlternC/cli/vendor/autoload.php';
 require_once '/usr/share/alternc/panel/class/config_nochk.php';
 
-$app = new Ahc\Cli\Application(
+$app = new AlternC\Ahc\Application(
     'alternc',
     'v0.0.0'
 );
