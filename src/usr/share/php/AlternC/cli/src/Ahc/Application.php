@@ -34,4 +34,15 @@ class Application extends Ahc\Cli\Application
             // default.
             ?? $this->commands[$this->default];
     }
+
+    public function add(Command $command, string $alias = '', bool $default = false): self
+    {
+        parent::add($command, $alias, $default);
+        if (method_exists($command, "getSubCommands")) {
+            foreach ($command->getSubCommands() as $subcommand) {
+                parent::add($subcommand);
+            }
+        }
+        return $this;
+    }
 }
