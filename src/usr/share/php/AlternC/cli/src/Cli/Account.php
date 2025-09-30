@@ -61,7 +61,7 @@ class Account extends Ahc\Cli\Input\Command
     {
     }
 
-    public function execute($name, $password)
+    public function execute()
     {
         $io = $this->app()->io();
 

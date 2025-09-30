@@ -17,7 +17,7 @@ class AccountList extends \AlternC\Cli\Account
 
     // When app->handle() locates `init` command it automatically calls `execute()`
     // with correct $ball and $apple values
-    public function execute($name, $password)
+    public function execute()
     {
         global $admin;
 
