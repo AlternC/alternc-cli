@@ -15,11 +15,24 @@ class AccountList extends \AlternC\Cli\Account
             <bold>  $0 account add</end> <comment>--name demo --password Ap@sswo0rd </end> ## details 1<eol/>
     ';
 
+    public function onConstruct()
+    {
+        $this->option('--fields', "Filelds to display, use , as separator");
+    }
+
     // When app->handle() locates `init` command it automatically calls `execute()`
     // with correct $ball and $apple values
-    public function execute()
+    public function execute(?string $fields = null)
     {
         global $admin;
+
+        $fields_invalid = [];
+
+        // List all fiels adsked, force to lowercase
+        if (!empty($fields)) {
+            $fields = explode(',', $fields);
+            $fields = array_map('strtolower', $fields);
+        }
 
         $io = $this->app()->io();
 
@@ -34,7 +47,23 @@ class AccountList extends \AlternC\Cli\Account
             }
         }
 
+        //Restrict result to fields asked
+        //List fields asked but invalid
+        if (!empty($fields)) {
+            $accountList = array_map(function ($row) use ($fields, &$fields_invalid) {
+                $intersect = array_intersect_key($row, array_flip($fields));
+                $fields_invalid = array_diff_key(array_flip($fields), $intersect);
+                return $intersect;
+            }, $accountList);
+        }
+
         $io->write('AlternC listing', true);
+
+        if (!empty($fields_invalid)) {
+            $fields_invalid = implode(",", array_flip($fields_invalid));
+            $io->warn('Some fields are invalids : '.$fields_invalid."\n");
+        }
+
         $io->table($accountList);
     }
 };
