@@ -9,6 +9,17 @@ if (\PHP_VERSION_ID < 80200) {
 require_once '/usr/share/php/AlternC/cli/vendor/autoload.php';
 require_once '/usr/share/alternc/panel/class/config_nochk.php';
 
+$user = get_current_user();
+$uid = getmyuid();
+
+if ($user == "root" || $uid == 0) {
+    $admin->enabled = 1;
+    $mem->setid(2000);
+} else {
+    $admin->enabled = 0;
+    $mem->setid($uid);
+}
+
 $app = new AlternC\Ahc\Application(
     'alternc',
     'v0.0.0'
