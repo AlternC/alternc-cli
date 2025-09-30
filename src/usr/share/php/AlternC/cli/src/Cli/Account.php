@@ -3,6 +3,7 @@
 namespace AlternC\Cli;
 
 use Ahc;
+use League\ConstructFinder\ConstructFinder;
 
 class Account extends Ahc\Cli\Input\Command
 {
@@ -14,6 +15,8 @@ class Account extends Ahc\Cli\Input\Command
     protected string $_usage = '
             <bold>  $0 account <eol/>
     ';
+
+    protected static $subCommands = [];
 
     public function __construct()
     {
@@ -39,6 +42,19 @@ class Account extends Ahc\Cli\Input\Command
         ;
 
         $this->onConstruct();
+    }
+
+    public function getSubCommands()
+    {
+
+        if (empty(self::$subCommands)) {
+            self::$subCommands = ConstructFinder::locatedIn(__DIR__)->exclude(__FILE__)->findClassNames();
+
+            foreach (self::$subCommands as $index => $subClassName) {
+                self::$subCommands[$index] = new $subClassName();
+            }
+        }
+        return self::$subCommands;
     }
 
     public function onConstruct()
