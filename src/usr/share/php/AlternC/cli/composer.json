@@ -1,6 +1,7 @@
 {
     "require": {
-        "adhocore/cli": "^v1.0.0"
+        "adhocore/cli": "^v1.0.0",
+        "league/construct-finder": "^1.5"
     },
     "autoload": {
         "psr-4": {
