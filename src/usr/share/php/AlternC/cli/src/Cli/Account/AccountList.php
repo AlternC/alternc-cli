@@ -15,14 +15,26 @@ class AccountList extends \AlternC\Cli\Account
             <bold>  $0 account add</end> <comment>--name demo --password Ap@sswo0rd </end> ## details 1<eol/>
     ';
 
-
     // When app->handle() locates `init` command it automatically calls `execute()`
     // with correct $ball and $apple values
     public function execute($name, $password)
     {
+        global $admin;
+
         $io = $this->app()->io();
 
-        $io->write('AlternC listing started', true);
+        $accountList = $admin->get_list(1);
 
+        // Get only named fields
+        foreach ($accountList as &$account) {
+            foreach ($account as $index => $column) {
+                if (is_numeric($index)) {
+                    unset($account[$index]);
+                }
+            }
+        }
+
+        $io->write('AlternC listing', true);
+        $io->table($accountList);
     }
 };
