@@ -23,4 +23,7 @@ $logo = "
 AlternC cli : one to manage all
 ";
 
+$app->add(new AlternC\Cli\Account());
+$app->add(new AlternC\Cli\Account\AccountList());
+
 $app->logo($logo)->handle($_SERVER['argv']);
