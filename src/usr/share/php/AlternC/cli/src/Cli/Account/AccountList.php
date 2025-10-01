@@ -17,12 +17,17 @@ class AccountList extends \AlternC\Cli\Account
 
     public function onConstruct()
     {
-        $this->option('--fields', "Filelds to display, use , as separator");
+        $this->option('--fields', "Fields to display, use , as separator")->on(
+            fn ($value) => $this->set('fields', array_merge($this->fields ?? [], explode(',', $value))) && false
+        );
+        $this->option('--field', "Field to display, option can be use many time")->on(
+            fn ($value) => $this->set('fields', array_merge($this->fields ?? [], [$value])) && false
+        );
     }
 
     // When app->handle() locates `init` command it automatically calls `execute()`
     // with correct $ball and $apple values
-    public function execute(?string $fields = null)
+    public function execute($fields = [])
     {
         global $admin;
 
@@ -30,7 +35,6 @@ class AccountList extends \AlternC\Cli\Account
 
         // List all fiels adsked, force to lowercase
         if (!empty($fields)) {
-            $fields = explode(',', $fields);
             $fields = array_map('strtolower', $fields);
         }
 
