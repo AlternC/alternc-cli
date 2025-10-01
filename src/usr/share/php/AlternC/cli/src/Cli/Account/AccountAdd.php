@@ -53,7 +53,7 @@ class AccountAdd extends \AlternC\Cli\Account
 
     // When app->handle() locates `init` command it automatically calls `execute()`
     // with correct $ball and $apple values
-    public function execute($login = '', $password = '', $email = '', $firstname = '', $lastname = '', $notes = '')
+    public function execute($login = '', $password = '', $email = '', $firstname = '', $lastname = '', $notes = '', $verbosity = 0)
     {
         global $admin, $msg;
         $io = $this->app()->io();
@@ -68,10 +68,12 @@ class AccountAdd extends \AlternC\Cli\Account
             return 1;
         }
 
-        $io->write('AlternC account', true);
-        $io->write("\t name : " . $login, true);
-        $io->write("\t password : " . $password, true);
-        $io->write("\t email : " . $email, true);
+        if ($verbosity > 0) {
+            $io->write('AlternC account', true);
+            $io->write("\t name : " . $login, true);
+            $io->write("\t password : " . $password, true);
+            $io->write("\t email : " . $email, true);
+        }
 
         // Attemp to create, exit if fail
         if (!($u = $admin->add_mem($login, $password, $lastname, $firstname, $email, 1, 1, 0, $notes, 0, 0, 1))) {
@@ -81,7 +83,9 @@ class AccountAdd extends \AlternC\Cli\Account
             }
             $io->error($error, true);
         } else {
-            $io->green('Account created',true);
+            if ($verbosity > 0) {
+                $io->green('Account created', true);
+            }
         }
 
     }
